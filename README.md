@@ -128,7 +128,6 @@ These skills are designed for projects using:
 - **Vite 7** (Build tool)
 - **Vue-i18n** (Internationalization)
 - **Vuelidate** (Form validation)
-- **Bootstrap 5.3 + SCSS** (Styling)
 
 ---
 
@@ -146,4 +145,4 @@ This project is licensed under the **MIT License** - see the LICENSE file for de
 
 ## Credits
 
-Created for Vue 3 / Vite / Pinia enterprise applications in fintech/agritech domain.
+Created for Vue 3 / Vite / Pinia enterprise applications in any domain.
