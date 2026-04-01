@@ -2,6 +2,8 @@
 
 A collection of skill files for [Trae IDE](https://trae.ai/) that enhance Vue 3 / Vite / Pinia based frontend development workflows.
 
+You can put your agent skills into your project main path to ".trae" folder
+
 ## Skills
 
 ### 1. agent-browser
