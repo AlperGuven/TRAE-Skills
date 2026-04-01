@@ -29,50 +29,50 @@ agent-browser install  # First time only
 | `agent-browser scroll <direction> <px>` | Scroll page |
 | `agent-browser mouse <action>` | Mouse operations (move, down, up, wheel) |
 
-## Trae Sandbox Notları
+## Trae Sandbox Notes
 
-Sandbox ortamında `~/.agent-browser` socket dizinine yazma izni olmadığı için:
+In sandbox environment, `~/.agent-browser` socket directory has write permission issues. Use this prefix for all commands:
 
 ```bash
-# Her komutu şu prefix ile çalıştır:
-HOME=/tmp agent-browser <komut>
+# Prefix every command with HOME=/tmp:
+HOME=/tmp agent-browser <command>
 
-# Örnek:
+# Examples:
 HOME=/tmp agent-browser open http://localhost:5173
 HOME=/tmp agent-browser snapshot
 HOME=/tmp agent-browser click @e5
 ```
 
-## Combobox/Dropdown Click Sorunu
+## Combobox/Dropdown Click Issue
 
-Bootstrap custom select'lerde `click @ref` dropdown option'da çalışmayabilir. Çözümler:
+`click @ref` may not work on Bootstrap custom select dropdown options. Solutions:
 
 ```bash
-# Çözüm 1: find ile text match
+# Solution 1: find with text match
 HOME=/tmp agent-browser find text "Kg" click
 
-# Çözüm 2: nth ile spesifik seçim (birden fazla eşleşme varsa)
+# Solution 2: nth for specific selection (when multiple matches exist)
 HOME=/tmp agent-browser find nth 1 text "Kg" click
 
-# Çözüm 3: Keyboard navigation
-HOME=/tmp agent-browser click @e44              # Combobox'u aç
-HOME=/tmp agent-browser keyboard type "key ArrowDown"  # İlk seçenek
-HOME=/tmp agent-browser keyboard type "Enter"           # Seç
+# Solution 3: Keyboard navigation
+HOME=/tmp agent-browser click @e44              # Open combobox
+HOME=/tmp agent-browser keyboard type "key ArrowDown"  # First option
+HOME=/tmp agent-browser keyboard type "Enter"           # Select
 ```
 
-## Doğrulama Stratejisi
+## Verification Strategy
 
 ```bash
-# Her adımdan sonra snapshot kontrol et
-HOME=/tmp agent-browser snapshot | grep "validation mesajı"
+# After each step, check snapshot
+HOME=/tmp agent-browser snapshot | grep "validation message"
 
-# Şüphe varsa screenshot al
+# Take screenshot if unsure
 HOME=/tmp agent-browser screenshot ./test-step-X.png
 
-# Ref değişebilir - her seferinde kontrol et
-HOME=/tmp agent-browser snapshot | grep -A 5 "element adi"
+# Refs may change - check each time
+HOME=/tmp agent-browser snapshot | grep -A 5 "element name"
 
-# Dialog içeriğini kontrol et
+# Check dialog content
 HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
 ```
 
@@ -87,35 +87,35 @@ HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
 
 ## Usage Flow
 
-1. **Browser'ı aç ve kapat**
+1. **Open and close browser**
    ```bash
-   # Açık browser varsa kapat
+   # Close existing browser if any
    HOME=/tmp agent-browser close --all 2>/dev/null; sleep 1
 
-   # Sayfayı aç
+   # Open page
    HOME=/tmp agent-browser open http://localhost:5173/retailer/application/create
    ```
 
-2. **Elementleri incele**
+2. **Inspect elements**
    ```bash
-   HOME=/tmp agent-browser snapshot  # @e1, @e2 gibi ref'leri gösterir
+   HOME=/tmp agent-browser snapshot  # Shows refs like @e1, @e2
    ```
 
-3. **İnteraksyon**
+3. **Interact**
    ```bash
-   HOME=/tmp agent-browser click @e5                      # Ref ile tıkla
-   HOME=/tmp agent-browser find text "Kg" click           # Text ile tıkla
-   HOME=/tmp agent-browser fill @e10 "değer"             # Input doldur
+   HOME=/tmp agent-browser click @e5                      # Click by ref
+   HOME=/tmp agent-browser find text "Kg" click           # Click by text
+   HOME=/tmp agent-browser fill @e10 "value"             # Fill input
    HOME=/tmp agent-browser scroll down 300                # Scroll
    ```
 
-4. **Doğrula**
+4. **Verify**
    ```bash
    HOME=/tmp agent-browser screenshot ./test-step-X.png   # Screenshot
-   HOME=/tmp agent-browser snapshot | grep "mesaj"       # İçerik kontrolü
+   HOME=/tmp agent-browser snapshot | grep "message"     # Content check
    ```
 
-5. **Temizlik**
+5. **Cleanup**
    ```bash
    HOME=/tmp agent-browser close
    ```
@@ -129,53 +129,53 @@ HOME=/tmp agent-browser close --all 2>/dev/null; sleep 1
 HOME=/tmp agent-browser open http://localhost:5173/login
 HOME=/tmp agent-browser snapshot
 
-# Form alanları (ref'ler değişebilir, snapshot ile kontrol et)
+# Form fields (refs may change, check with snapshot)
 HOME=/tmp agent-browser fill input[type='email'] "basak@tarim.com"
 HOME=/tmp agent-browser fill input[type='password'] "basaktarim123"
 HOME=/tmp agent-browser click "button[type='submit']"
 
-# Login sonrası yönlendirme kontrolü
+# Check redirect after login
 sleep 2
 HOME=/tmp agent-browser screenshot ./retailer-login.png
 HOME=/tmp agent-browser snapshot | head -20
 ```
 
-### Retailer Panel - Ürün Ekleme
+### Retailer Panel - Add Product
 
 ```bash
 HOME=/tmp agent-browser open http://localhost:5173/retailer/application/create
 HOME=/tmp agent-browser snapshot
 
-# "Ürün ekle" butonunu bul ve tıkla
-HOME=/tmp agent-browser find text "Ürün ekle" click
+# Find and click "Add product" button
+HOME=/tmp agent-browser find text "Add product" click
 sleep 1
 
-# Modal açıldı mı kontrol et
+# Check if modal opened
 HOME=/tmp agent-browser screenshot ./modal-open.png
 HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
 
-# Ürün ara
-HOME=/tmp agent-browser click @e49  # Ürün arama kutusu
-HOME=/tmp agent-browser type @e49 "buğday"
+# Search product
+HOME=/tmp agent-browser click @e49  # Product search box
+HOME=/tmp agent-browser type @e49 "wheat"
 sleep 1
-HOME=/tmp agent-browser find text "Buğday" click
+HOME=/tmp agent-browser find text "Wheat" click
 
-# Marka seç (dropdown açıkken)
-HOME=/tmp agent-browser find text "Marka" click
+# Select brand (while dropdown is open)
+HOME=/tmp agent-browser find text "Brand" click
 sleep 1
-HOME=/tmp agent-browser find nth 1 text "Abalım" click
+HOME=/tmp agent-browser find nth 1 text "Abalim" click
 
-# Birim seç
-HOME=/tmp agent-browser find text "Birim" click
+# Select unit
+HOME=/tmp agent-browser find text "Unit" click
 sleep 1
 HOME=/tmp agent-browser find text "Kg" click
 
-# Adet ve fiyat doldur
+# Fill quantity and price
 HOME=/tmp agent-browser fill @e45 "10"
 HOME=/tmp agent-browser fill @e46 "100"
 
-# Form kontrolü
-HOME=/tmp agent-browser snapshot | grep "Ekle"
+# Verify form
+HOME=/tmp agent-browser snapshot | grep "Add"
 HOME=/tmp agent-browser screenshot ./product-form-filled.png
 ```
 
@@ -198,11 +198,10 @@ HOME=/tmp agent-browser screenshot ./admin-login.png
 
 ## Troubleshooting
 
-| Sorun | Çözüm |
-|-------|-------|
-| Socket permission error | `HOME=/tmp agent-browser` kullan |
-| Element not found | Snapshot ile ref kontrol et |
-| Click çalışmıyor | `find text` veya `keyboard` dene |
-| Dropdown açılmıyor | Combobox'a tıkla, sonra `find text` ile seçenek seç |
-| Form submit olmuyor | Validation mesajlarını kontrol et (`snapshot \| grep "zorunlu"`) |
-
+| Problem | Solution |
+|---------|----------|
+| Socket permission error | Use `HOME=/tmp agent-browser` |
+| Element not found | Check ref with snapshot |
+| Click not working | Try `find text` or `keyboard` |
+| Dropdown not opening | Click on combobox first, then use `find text` to select option |
+| Form not submitting | Check validation messages (`snapshot \| grep "required"`) |
