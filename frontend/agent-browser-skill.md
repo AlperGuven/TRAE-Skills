@@ -130,8 +130,8 @@ HOME=/tmp agent-browser open http://localhost:5173/login
 HOME=/tmp agent-browser snapshot
 
 # Form fields (refs may change, check with snapshot)
-HOME=/tmp agent-browser fill input[type='email'] "basak@tarim.com"
-HOME=/tmp agent-browser fill input[type='password'] "basaktarim123"
+HOME=/tmp agent-browser fill input[type='email'] "user@user.com"
+HOME=/tmp agent-browser fill input[type='password'] "pass"
 HOME=/tmp agent-browser click "button[type='submit']"
 
 # Check redirect after login
@@ -184,8 +184,8 @@ HOME=/tmp agent-browser screenshot ./product-form-filled.png
 ```bash
 HOME=/tmp agent-browser close --all 2>/dev/null; sleep 1
 HOME=/tmp agent-browser open http://localhost:5173/admin/login
-HOME=/tmp agent-browser fill input[type='email'] "alper.guven@tarfin.com"
-HOME=/tmp agent-browser fill input[type='password'] "93209320Tt"
+HOME=/tmp agent-browser fill input[type='email'] "user@user.com"
+HOME=/tmp agent-browser fill input[type='password'] "password"
 HOME=/tmp agent-browser click "button[type='submit']"
 sleep 2
 HOME=/tmp agent-browser screenshot ./admin-login.png
