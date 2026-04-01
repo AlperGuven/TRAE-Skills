@@ -1,6 +1,7 @@
 # TRAE-Skills
 
-A collection of skill files for [Trae IDE](https://trae.ai/) that enhance Vue 3 / Vite / Pinia based frontend development workflows.
+A collection of skill files for [Trae IDE](https://trae.ai/) that enhance Vue 3 / Vite / Pinia based frontend development workflows. 
+(In the future, we’ll be adding skills beyond just frontend development; if you’d like to contribute, please feel free to join.)
 
 You can put your agent skills into your project main path to ".trae" folder. For example: .trae/agent-browser/SKILL.md
 
