@@ -1,6 +1,10 @@
 ---
-name: "agent-browser"
-description: "Browser automation CLI for UI testing, E2E tests, and page interaction. Invoke when user wants to test UI, click buttons, fill forms, or take screenshots."
+name: agent-browser
+description: Browser automation via the agent-browser CLI to open pages, snapshot the accessibility tree, click elements, fill forms and capture screenshots. Use when verifying a running UI, reproducing a frontend bug, or running a lightweight E2E check.
+license: MIT
+compatibility: Requires Node.js 20+, the agent-browser npm CLI installed globally, and Chrome for Testing via agent-browser install.
+metadata:
+  category: frontend
 ---
 
 # Agent Browser
@@ -16,18 +20,18 @@ agent-browser install  # First time only
 
 ## Core Commands
 
-| Command | Description |
-|---------|-------------|
-| `agent-browser open <url>` | Navigate to URL |
-| `agent-browser snapshot` | Get accessibility tree with refs |
-| `agent-browser screenshot [path]` | Take screenshot |
-| `agent-browser click <sel>` | Click element |
-| `agent-browser fill <sel> <text>` | Fill input |
-| `agent-browser close` | Close browser |
-| `agent-browser find <criteria>` | Find element by role/text/label |
-| `agent-browser keyboard type <key>` | Send keyboard input |
-| `agent-browser scroll <direction> <px>` | Scroll page |
-| `agent-browser mouse <action>` | Mouse operations (move, down, up, wheel) |
+| Command                                 | Description                              |
+| --------------------------------------- | ---------------------------------------- |
+| `agent-browser open <url>`              | Navigate to URL                          |
+| `agent-browser snapshot`                | Get accessibility tree with refs         |
+| `agent-browser screenshot [path]`       | Take screenshot                          |
+| `agent-browser click <sel>`             | Click element                            |
+| `agent-browser fill <sel> <text>`       | Fill input                               |
+| `agent-browser close`                   | Close browser                            |
+| `agent-browser find <criteria>`         | Find element by role/text/label          |
+| `agent-browser keyboard type <key>`     | Send keyboard input                      |
+| `agent-browser scroll <direction> <px>` | Scroll page                              |
+| `agent-browser mouse <action>`          | Mouse operations (move, down, up, wheel) |
 
 ## Trae Sandbox Notes
 
@@ -88,6 +92,7 @@ HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
 ## Usage Flow
 
 1. **Open and close browser**
+
    ```bash
    # Close existing browser if any
    HOME=/tmp agent-browser close --all 2>/dev/null; sleep 1
@@ -97,11 +102,13 @@ HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
    ```
 
 2. **Inspect elements**
+
    ```bash
    HOME=/tmp agent-browser snapshot  # Shows refs like @e1, @e2
    ```
 
 3. **Interact**
+
    ```bash
    HOME=/tmp agent-browser click @e5                      # Click by ref
    HOME=/tmp agent-browser find text "Kg" click           # Click by text
@@ -110,6 +117,7 @@ HOME=/tmp agent-browser snapshot | grep -A 30 "dialog"
    ```
 
 4. **Verify**
+
    ```bash
    HOME=/tmp agent-browser screenshot ./test-step-X.png   # Screenshot
    HOME=/tmp agent-browser snapshot | grep "message"     # Content check
@@ -130,8 +138,8 @@ HOME=/tmp agent-browser open http://localhost:5173/login
 HOME=/tmp agent-browser snapshot
 
 # Form fields (refs may change, check with snapshot)
-HOME=/tmp agent-browser fill input[type='email'] "user@user.com"
-HOME=/tmp agent-browser fill input[type='password'] "pass"
+HOME=/tmp agent-browser fill input[type='email'] "$E2E_RETAILER_EMAIL"
+HOME=/tmp agent-browser fill input[type='password'] "$E2E_RETAILER_PASSWORD"
 HOME=/tmp agent-browser click "button[type='submit']"
 
 # Check redirect after login
@@ -181,11 +189,17 @@ HOME=/tmp agent-browser screenshot ./product-form-filled.png
 
 ### Admin Panel - Login
 
+Credentials must come from the environment, never from the skill file.
+
 ```bash
+# Exported in the shell session or read from a git-ignored .env
+# E2E_ADMIN_EMAIL=...
+# E2E_ADMIN_PASSWORD=...
+
 HOME=/tmp agent-browser close --all 2>/dev/null; sleep 1
 HOME=/tmp agent-browser open http://localhost:5173/admin/login
-HOME=/tmp agent-browser fill input[type='email'] "user@user.com"
-HOME=/tmp agent-browser fill input[type='password'] "password"
+HOME=/tmp agent-browser fill input[type='email'] "$E2E_ADMIN_EMAIL"
+HOME=/tmp agent-browser fill input[type='password'] "$E2E_ADMIN_PASSWORD"
 HOME=/tmp agent-browser click "button[type='submit']"
 sleep 2
 HOME=/tmp agent-browser screenshot ./admin-login.png
@@ -198,10 +212,10 @@ HOME=/tmp agent-browser screenshot ./admin-login.png
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Socket permission error | Use `HOME=/tmp agent-browser` |
-| Element not found | Check ref with snapshot |
-| Click not working | Try `find text` or `keyboard` |
-| Dropdown not opening | Click on combobox first, then use `find text` to select option |
-| Form not submitting | Check validation messages (`snapshot \| grep "required"`) |
+| Problem                 | Solution                                                       |
+| ----------------------- | -------------------------------------------------------------- |
+| Socket permission error | Use `HOME=/tmp agent-browser`                                  |
+| Element not found       | Check ref with snapshot                                        |
+| Click not working       | Try `find text` or `keyboard`                                  |
+| Dropdown not opening    | Click on combobox first, then use `find text` to select option |
+| Form not submitting     | Check validation messages (`snapshot \| grep "required"`)      |

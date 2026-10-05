@@ -1,149 +1,144 @@
 # TRAE-Skills
 
-A collection of skill files for [Trae IDE](https://trae.ai/) that enhance Vue 3 / Vite / Pinia based frontend development workflows. 
-(In the future, we’ll be adding skills beyond just frontend development; if you’d like to contribute, please feel free to join.)
+A skill library following the open [Agent Skills](https://agentskills.io/) standard. Authored and tuned for [Trae](https://trae.ai/), portable as-is to Claude Code, Codex CLI, Cursor, Gemini CLI and OpenCode.
 
-You can put your agent skills into your project main path to ".trae" folder. For example: .trae/agent-browser/SKILL.md
+Every skill is a directory containing a `SKILL.md` file. Nothing else is required.
 
-## Skills
+The library started as a frontend-only collection and is growing beyond it. Contributions are welcome — see [Contributing](#contributing).
 
-### 1. agent-browser
+## Repository layout
 
-**Purpose**: Browser automation CLI for UI testing, E2E tests, and page interaction.
-
-**Use cases**:
-- Test UI components and forms
-- Automated E2E testing without heavy frameworks
-- Page interaction testing
-- Screenshot capture for visual verification
-
-**Setup**:
-```bash
-npm install -g agent-browser
-agent-browser install
+```
+.agents/skills/
+├── agent-browser/SKILL.md      # frontend
+├── vue-i18n/SKILL.md           # frontend
+├── vuelidate-i18n/SKILL.md     # frontend
+└── laravel-tdd/SKILL.md        # backend
 ```
 
-**Key features**:
-- Lightweight alternative to Playwright
-- Accessibility tree-based element selection
-- Snapshot inspection for element refs
-- Keyboard and mouse automation
-- Screenshot capture
+`.agents/skills/` is the vendor-neutral discovery path. Categories live in each skill's `metadata.category` frontmatter field rather than in the directory tree, because the spec requires `name` to match the parent directory exactly.
 
----
+## Catalogue
 
-### 2. vue-i18n
+### Frontend
 
-**Purpose**: Internationalization implementation guide for vue-i18n v9 with Vue 3 Composition API.
+| Skill            | Purpose                                                       | Trigger                                                                                      |
+| ---------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `agent-browser`  | Drives a real Chrome instance through the `agent-browser` CLI | Verifying a running UI, reproducing a frontend bug, lightweight E2E checks                   |
+| `vue-i18n`       | vue-i18n v9 internationalization for Vue 3 Composition API    | Adding or translating text, creating locale files, pluralization, date and number formatting |
+| `vuelidate-i18n` | Vuelidate validation with localized error messages            | Writing validation rules, custom validators, wiring validation state into inputs             |
 
-**Use cases**:
-- Adding new user-facing text to components
-- Creating new locale files (tr/en/ro)
-- Translating hardcoded strings
-- Date/number formatting per locale
-- Language switching
+### Backend
 
-**Key concepts**:
-- Translation function: `t('key.path')`
-- Interpolation: `t('key', { field: 'value' })`
-- Pluralization: `{n} | {n}` format
-- Date formatting: `d(date, 'short')`
-- Number formatting: `n(amount, 'currency')`
-
-**File structure**:
-```
-src/
-├── i18n/
-│   ├── i18n.js
-│   ├── dateTimeFormats.js
-│   └── numberFormats.js
-└── locales/
-    ├── tr/
-    ├── en/
-    └── ro/
-```
-
----
-
-### 3. vuelidate-i18n
-
-**Purpose**: Form validation with Vuelidate and internationalized error messages.
-
-**Use cases**:
-- Adding validation rules to forms
-- Creating localized validation messages
-- Custom validator development
-- Error message display patterns
-
-**Built-in validators**:
-- `required`, `email`, `minLength`, `maxLength`
-- `minValue`, `maxValue`, `sameAs`
-- `requiredIf`, `numeric`, `integer`
-
-**Error message mapping**:
-| Validator | i18n Param |
-|-----------|------------|
-| `minLength(8)` | `{min_length: 8}` |
-| `minValue(0)` | `{min_value: 0}` |
-| `maxLength(50)` | `{max_length: 50}` |
-
----
+| Skill         | Purpose                                                       | Trigger                                                                                  |
+| ------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `laravel-tdd` | Red-green-refactor workflow for Laravel with PHPUnit and Pest | Writing or refactoring Laravel tests, adding endpoints or models, fixing bugs test-first |
 
 ## Installation
 
-Copy the skill files to your Trae configuration directory:
+### Trae
 
+Trae reads `.agents/skills/` natively once the directory is enabled.
+
+1. Open **Settings → Skills & Commands**.
+2. Under **Import Settings**, toggle on **Enable .agents Skills Directory**.
+
+To install into a project or globally instead, copy the skill directories:
+
+```bash
+# Project scope
+cp -R .agents/skills/laravel-tdd /path/to/project/.trae/skills/
+
+# Global scope
+cp -R .agents/skills/laravel-tdd ~/.trae/skills/
 ```
-~/.trae/skills/
-├── agent-browser/
-│   └── SKILL.md
-├── vue-i18n/
-│   └── SKILL.md
-└── vuelidate-i18n/
-    └── SKILL.md
+
+A skill in `.trae/skills/` takes priority over one of the same name in `.agents/skills/`.
+
+### Claude Code
+
+```bash
+# Project scope
+cp -R .agents/skills/laravel-tdd /path/to/project/.claude/skills/
+
+# Global scope
+cp -R .agents/skills/laravel-tdd ~/.claude/skills/
 ```
 
-Or reference them in your project's `.trae/skills/` directory for team sharing.
+### Codex CLI, Gemini CLI, OpenCode
 
----
+These already read `.agents/skills/` directly. For global scope:
 
-## Usage in Trae
+```bash
+cp -R .agents/skills/laravel-tdd ~/.agents/skills/
+```
 
-When you invoke these skills, Trae will provide context-aware guidance based on the skill files.
+### Using the skills CLI
 
-Example prompts:
-- "Login sayfasına validation ekle"
-- "Yeni bir locale dosyası oluştur"
-- "Ürün ekleme formunu test et"
-- "Bu component'e çeviri anahtarları ekle"
+```bash
+# List available skills
+npx skills add AlperGuven/TRAE-Skills --list
 
----
+# Install one skill for a specific agent
+npx skills add AlperGuven/TRAE-Skills --skill laravel-tdd -a trae
+npx skills add AlperGuven/TRAE-Skills --skill vue-i18n -a claude-code
 
-## Target Stack
+# Install globally
+npx skills add AlperGuven/TRAE-Skills --skill agent-browser -g
+```
 
-These skills are designed for projects using:
+### Import through the Trae UI
 
-- **Vue 3.5+** (Composition API & Options API)
-- **Pinia 3.x** (State management)
-- **Vue Router 4** (Routing)
-- **Vite 7** (Build tool)
-- **Vue-i18n** (Internationalization)
-- **Vuelidate** (Form validation)
+**Settings → Skills & Commands → Create**, then upload the `SKILL.md` file or a zip of the skill directory.
 
----
+## Usage
+
+Invoke by natural language, by `#skill-name` in the Trae chat box, or by referencing the file with `@`:
+
+- "Login sayfasına validation ekle" → `vuelidate-i18n`
+- "Yeni bir locale dosyası oluştur" → `vue-i18n`
+- "Ürün ekleme formunu test et" → `agent-browser`
+- "Write a failing test for the project create endpoint" → `laravel-tdd`
+
+Trae scans every skill's `name` and `description` at session start, then loads the full body only when a task matches. This is why descriptions state both what a skill does and when to use it.
+
+## Authoring conventions
+
+Rules enforced across this library:
+
+| Rule                                                                                                       | Reason                                                               |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `name` matches the directory name, kebab-case, max 64 chars                                                | Required by the spec; a mismatch makes the skill unloadable          |
+| `description` max 1024 chars, third person, states what **and** when                                       | It is the only text the agent sees before deciding to load the skill |
+| No angle brackets in frontmatter                                                                           | They get misread as markup when injected into the system prompt      |
+| Only spec frontmatter keys: `name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools` | Unknown keys are rejected by validators                              |
+| Body under 500 lines                                                                                       | The body is loaded whole into context on activation                  |
+| Skill written in English                                                                                   | Keeps it usable across agents and locales                            |
+| `scripts/`, `references/`, `assets/` stay one level deep                                                   | Flat layout keeps on-demand resources predictable to locate          |
+
+Heavy detail belongs in a `references/` file linked from the body, not in `SKILL.md`.
+
+### Security
+
+Never commit credentials into a skill. Examples that need logins read them from the environment:
+
+```bash
+HOME=/tmp agent-browser fill input[type='email'] "$E2E_ADMIN_EMAIL"
+```
+
+## Target stack
+
+**Frontend** — Vue 3.5+, Pinia 3.x, Vue Router 4, Vite 7, vue-i18n v9, Vuelidate
+
+**Backend** — PHP 8.5, Laravel 12, PHPUnit 12, Pest, Larastan 3, Rector 2
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
-
----
+1. Create `.agents/skills/<skill-name>/SKILL.md`.
+2. Fill in `name`, `description`, `license` and `metadata.category`.
+3. Keep the body under 500 lines and split deep reference material into `references/`.
+4. Add the skill to the catalogue table above.
 
 ## License
 
-This project is licensed under the **MIT License** - see the LICENSE file for details.
-
----
-
-## Credits
-
-Created for Vue 3 / Vite / Pinia enterprise applications in any domain.
+MIT — see [LICENSE](LICENSE).
