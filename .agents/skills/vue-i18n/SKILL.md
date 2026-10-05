@@ -1,6 +1,9 @@
 ---
-name: "vue-i18n"
-description: "Vue 3 i18n implementation guide for vue-i18n. Invoke when user wants to add/translate text, create new locale files, or work with translations."
+name: vue-i18n
+description: Implements vue-i18n v9 internationalization for Vue 3 apps with the Composition API. Use when adding or translating user-facing text, creating locale files, handling pluralization, or formatting dates and numbers per locale.
+license: MIT
+metadata:
+  category: frontend
 ---
 
 # Vue i18n (vue-i18n)

@@ -1,6 +1,9 @@
 ---
-name: "vuelidate-i18n"
-description: "Vuelidate validation with i18n integration. Invoke when user wants to add/translate validation rules, create validation messages, or work with form validation."
+name: vuelidate-i18n
+description: Adds Vuelidate form validation to Vue 3 components with internationalized error messages. Use when writing validation rules, building custom validators, localizing error text, or wiring validation state into form inputs.
+license: MIT
+metadata:
+  category: frontend
 ---
 
 # Vuelidate + i18n Validation
@@ -28,6 +31,7 @@ src/
 ## Validation Messages (validations.json)
 
 ### Turkish (tr)
+
 ```json
 {
   "required": "{field} alanı zorunludur",
@@ -50,6 +54,7 @@ src/
 ```
 
 ### English (en)
+
 ```json
 {
   "required": "{field} field is mandatory",
@@ -72,6 +77,7 @@ src/
 ```
 
 ### Romanian (ro)
+
 ```json
 {
   "required": "Câmpul {field} este obligatoriu",
@@ -110,8 +116,8 @@ import {
   maxValue,
   sameAs,
   requiredIf,
-  helpers
-} from '@vuelidate/validators'
+  helpers,
+} from "@vuelidate/validators";
 ```
 
 ## Basic Usage
@@ -120,23 +126,23 @@ import {
 
 ```vue
 <script setup>
-import { ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
-import { required, email, minLength } from '@vuelidate/validators'
-import { errorMessageWithParams } from '@/utilities/validationErrorMessage.js'
+import { ref } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength } from "@vuelidate/validators";
+import { errorMessageWithParams } from "@/utilities/validationErrorMessage.js";
 
 const form = ref({
-  email: '',
-  password: ''
-})
+  email: "",
+  password: "",
+});
 
 const rules = {
   email: { required, email, $lazy: true },
-  password: { required, minLength: minLength(8), $lazy: true }
-}
+  password: { required, minLength: minLength(8), $lazy: true },
+};
 
-const v$ = useVuelidate(rules, form)
-const emailErrors = computed(() => errorMessageWithParams(v$.value.email, 'views.admin.users.email'))
+const v$ = useVuelidate(rules, form);
+const emailErrors = computed(() => errorMessageWithParams(v$.value.email, "views.admin.users.email"));
 </script>
 ```
 
@@ -144,37 +150,37 @@ const emailErrors = computed(() => errorMessageWithParams(v$.value.email, 'views
 
 ```vue
 <script>
-import { email, minLength, required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
-import { errorMessageWithParams } from '@/utilities/validationErrorMessage.js'
+import { email, minLength, required } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
+import { errorMessageWithParams } from "@/utilities/validationErrorMessage.js";
 
 export default {
   data() {
     return {
       v$: useVuelidate(),
       user: {
-        email: '',
-        password: ''
-      }
-    }
+        email: "",
+        password: "",
+      },
+    };
   },
   validations() {
     return {
       user: {
         email: { required, email, $lazy: true },
-        password: { required, minLength: minLength(8), $lazy: true }
-      }
-    }
+        password: { required, minLength: minLength(8), $lazy: true },
+      },
+    };
   },
   computed: {
     emailErrorMessages() {
-      return errorMessageWithParams(this.v$.user.email, 'views.admin.users.email')
+      return errorMessageWithParams(this.v$.user.email, "views.admin.users.email");
     },
     passwordErrorMessages() {
-      return errorMessageWithParams(this.v$.user.password, 'views.admin.users.password')
-    }
-  }
-}
+      return errorMessageWithParams(this.v$.user.password, "views.admin.users.password");
+    },
+  },
+};
 </script>
 ```
 
@@ -184,11 +190,7 @@ export default {
 
 ```vue
 <template>
-  <base-input
-    v-model="form.email"
-    :error="v$.email.$error"
-    :error-messages="emailErrorMessages"
-  />
+  <base-input v-model="form.email" :error="v$.email.$error" :error-messages="emailErrorMessages" />
 </template>
 ```
 
@@ -198,16 +200,16 @@ export default {
 <template>
   <ul class="password-requirements">
     <li :class="{ isValid: v$.password.minLength.$response }">
-      {{ $t('shared.validations.minLengthPassword') }}
+      {{ $t("shared.validations.minLengthPassword") }}
     </li>
     <li :class="{ isValid: v$.password.containsNumber.$response }">
-      {{ $t('shared.validations.containsNumber') }}
+      {{ $t("shared.validations.containsNumber") }}
     </li>
     <li :class="{ isValid: v$.password.containsUppercase.$response }">
-      {{ $t('shared.validations.containsUppercase') }}
+      {{ $t("shared.validations.containsUppercase") }}
     </li>
     <li :class="{ isValid: v$.password.containsLowercase.$response }">
-      {{ $t('shared.validations.containsLowercase') }}
+      {{ $t("shared.validations.containsLowercase") }}
     </li>
   </ul>
 </template>
@@ -219,19 +221,16 @@ export default {
 
 ```vue
 <script setup>
-import { helpers } from '@vuelidate/validators'
-import i18n from '@/i18n/i18n.js'
+import { helpers } from "@vuelidate/validators";
+import i18n from "@/i18n/i18n.js";
 
-const { t } = i18n.global
+const { t } = i18n.global;
 
-const mustBePositive = helpers.withMessage(
-  t('shared.validations.numeric'),
-  value => /^\d+$/.test(value)
-)
+const mustBePositive = helpers.withMessage(t("shared.validations.numeric"), (value) => /^\d+$/.test(value));
 
 const rules = {
-  amount: { mustBePositive }
-}
+  amount: { mustBePositive },
+};
 </script>
 ```
 
@@ -239,26 +238,23 @@ const rules = {
 
 ```vue
 <script setup>
-import { helpers } from '@vuelidate/validators'
-import moment from 'moment'
-import { useI18n } from 'vue-i18n'
+import { helpers } from "@vuelidate/validators";
+import moment from "moment";
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n()
+const { t } = useI18n();
 
-const isValidDate = value => {
-  if (!value) return true
-  if (value === 'Invalid date') return false
-  return moment(value, 'YYYY-MM-DD', true).isValid()
-}
+const isValidDate = (value) => {
+  if (!value) return true;
+  if (value === "Invalid date") return false;
+  return moment(value, "YYYY-MM-DD", true).isValid();
+};
 
-const validDate = helpers.withMessage(
-  t('views.admin.holidays.invalid_date_error'),
-  isValidDate
-)
+const validDate = helpers.withMessage(t("views.admin.holidays.invalid_date_error"), isValidDate);
 
 const rules = {
-  start_date: { required, validDate, $lazy: true }
-}
+  start_date: { required, validDate, $lazy: true },
+};
 </script>
 ```
 
@@ -266,16 +262,16 @@ const rules = {
 
 ```vue
 <script setup>
-import { helpers } from '@vuelidate/validators'
-import country from '@/utilities/country.js'
+import { helpers } from "@vuelidate/validators";
+import country from "@/utilities/country.js";
 
 const phoneValidator = helpers.regex(
-  country.is('tr') ? /^\([0-9]{3}\) [0-9]{3} [0-9]{2} [0-9]{2}$/ : /^\([0-9]{3}\) [0-9]{3} [0-9]{3}$/
-)
+  country.is("tr") ? /^\([0-9]{3}\) [0-9]{3} [0-9]{2} [0-9]{2}$/ : /^\([0-9]{3}\) [0-9]{3} [0-9]{3}$/,
+);
 
 const rules = {
-  phone: { required, phoneValidator }
-}
+  phone: { required, phoneValidator },
+};
 </script>
 ```
 
@@ -285,25 +281,25 @@ const rules = {
 
 ```vue
 <script setup>
-import { email, minLength, required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
-import { errorMessageWithParams } from '@/utilities/validationErrorMessage.js'
+import { email, minLength, required } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
+import { errorMessageWithParams } from "@/utilities/validationErrorMessage.js";
 
-const form = ref({ email: '', password: '' })
+const form = ref({ email: "", password: "" });
 
 const rules = {
   email: { required, email, $lazy: true },
-  password: { required }
-}
+  password: { required },
+};
 
-const v$ = useVuelidate(rules, form)
+const v$ = useVuelidate(rules, form);
 
 const handleSubmit = async () => {
-  const result = await v$.value.$validate()
+  const result = await v$.value.$validate();
   if (result) {
     // Submit form
   }
-}
+};
 </script>
 ```
 
@@ -311,29 +307,29 @@ const handleSubmit = async () => {
 
 ```vue
 <script setup>
-import { email, helpers, minLength, required, sameAs } from '@vuelidate/validators'
+import { email, helpers, minLength, required, sameAs } from "@vuelidate/validators";
 
 const form = ref({
-  email: '',
-  password: '',
-  password_confirmation: ''
-})
+  email: "",
+  password: "",
+  password_confirmation: "",
+});
 
 const rules = {
   email: { required, email, $lazy: true },
   password: {
     required,
     minLength: minLength(8),
-    containsUppercase: value => /[A-Z]/.test(value),
-    containsLowercase: value => /[a-z]/.test(value),
-    containsNumber: value => /[0-9]/.test(value),
-    containsSpecial: value => /[ !"@#£$%&{()}<>=+'|^,;-]/.test(value)
+    containsUppercase: (value) => /[A-Z]/.test(value),
+    containsLowercase: (value) => /[a-z]/.test(value),
+    containsNumber: (value) => /[0-9]/.test(value),
+    containsSpecial: (value) => /[ !"@#£$%&{()}<>=+'|^,;-]/.test(value),
   },
   password_confirmation: {
     required,
-    sameAsPassword: sameAs(form.value.password)
-  }
-}
+    sameAsPassword: sameAs(form.value.password),
+  },
+};
 </script>
 ```
 
@@ -341,18 +337,18 @@ const rules = {
 
 ```vue
 <script setup>
-import { required, minLength } from '@vuelidate/validators'
-import i18n from '@/i18n/i18n.js'
+import { required, minLength } from "@vuelidate/validators";
+import i18n from "@/i18n/i18n.js";
 
-const { t } = i18n.global
+const { t } = i18n.global;
 
 const phoneRules = {
   phone: {
     required,
-    minLength: minLength(t('shared.validation_rules.phone_min_length')),
-    mustBeSecondCharacterSeven: value => !(value?.length && value[1] !== '7')
-  }
-}
+    minLength: minLength(t("shared.validation_rules.phone_min_length")),
+    mustBeSecondCharacterSeven: (value) => !(value?.length && value[1] !== "7"),
+  },
+};
 </script>
 ```
 
@@ -360,33 +356,33 @@ const phoneRules = {
 
 ```vue
 <script setup>
-import { required, minLength, maxLength } from '@vuelidate/validators'
-import { Cnp } from '@/utilities/cnp.js'
-import moment from 'moment'
+import { required, minLength, maxLength } from "@vuelidate/validators";
+import { Cnp } from "@/utilities/cnp.js";
+import moment from "moment";
 
 const cnpRules = {
   cnp: {
     required,
     minLength: minLength(13), // This 13 is not constant, you can pick according to situtation
     maxLength: maxLength(13),
-    minAge: value => {
-      if (value?.length < 13) return true
+    minAge: (value) => {
+      if (value?.length < 13) return true;
       if (value) {
-        const birthDate = new Cnp(value).getBirthDate()
-        return moment().diff(birthDate, 'years', true) >= 18
+        const birthDate = new Cnp(value).getBirthDate();
+        return moment().diff(birthDate, "years", true) >= 18;
       }
-      return false
+      return false;
     },
-    maxAge: value => {
-      if (value?.length < 13) return true
+    maxAge: (value) => {
+      if (value?.length < 13) return true;
       if (value) {
-        const birthDate = new Cnp(value).getBirthDate()
-        return moment().diff(birthDate, 'years', true) <= 100
+        const birthDate = new Cnp(value).getBirthDate();
+        return moment().diff(birthDate, "years", true) <= 100;
       }
-      return false
-    }
-  }
-}
+      return false;
+    },
+  },
+};
 </script>
 ```
 
@@ -395,28 +391,28 @@ const cnpRules = {
 ### Composables (src/composables/validation.js)
 
 ```js
-import { useNotificationStore } from '@/stores/helpers/notification.js'
-import i18n from '@/i18n/i18n.js'
+import { useNotificationStore } from "@/stores/helpers/notification.js";
+import i18n from "@/i18n/i18n.js";
 
-const { t } = i18n.global
+const { t } = i18n.global;
 
 export default function useValidation() {
   const validationStatuses = (validation, enableDirtyClass = true) => {
     return {
       error: validation.$error,
-      dirty: enableDirtyClass ? validation.$dirty : false
-    }
-  }
+      dirty: enableDirtyClass ? validation.$dirty : false,
+    };
+  };
 
   const validationErrorNotification = () => {
-    const notificationStore = useNotificationStore()
+    const notificationStore = useNotificationStore();
     notificationStore.add({
-      type: 'danger',
-      message: t('shared.validations.error')
-    })
-  }
+      type: "danger",
+      message: t("shared.validations.error"),
+    });
+  };
 
-  return { validationStatuses, validationErrorNotification }
+  return { validationStatuses, validationErrorNotification };
 }
 ```
 
@@ -424,11 +420,11 @@ export default function useValidation() {
 
 ```vue
 <script setup>
-import useValidation from '@/composables/validation.js'
+import useValidation from "@/composables/validation.js";
 
-const { validationStatuses, validationErrorNotification } = useValidation()
+const { validationStatuses, validationErrorNotification } = useValidation();
 
-const status = computed(() => validationStatuses(v$.value.email))
+const status = computed(() => validationStatuses(v$.value.email));
 </script>
 ```
 
@@ -437,81 +433,81 @@ const status = computed(() => validationStatuses(v$.value.email))
 **src/utilities/validationErrorMessage.js**
 
 ```js
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
 export const errorMessageWithParams = (validation, fieldName) => {
-  const { t } = useI18n()
-  const messages = []
+  const { t } = useI18n();
+  const messages = [];
 
-  const rules = Object.keys(validation ?? {}).filter(item => item.startsWith('$') === false)
+  const rules = Object.keys(validation ?? {}).filter((item) => item.startsWith("$") === false);
 
   const items = rules.reduce((obj, key) => {
-    obj[key] = validation[key]
-    return obj
-  }, {})
+    obj[key] = validation[key];
+    return obj;
+  }, {});
 
   for (const key in items) {
     if (items[key]?.$invalid === true && items[key]?.$pending === false) {
       const params = {
         ...items[key].$params,
-        field: t(fieldName)
-      }
+        field: t(fieldName),
+      };
 
       // Parameter name mapping
-      if (key === 'minLength') params.min_length = params.min
-      if (key === 'minValue') params.min_value = params.min
-      if (key === 'maxValue') params.max_value = params.max
-      if (key === 'maxLength') params.max_length = params.max
+      if (key === "minLength") params.min_length = params.min;
+      if (key === "minValue") params.min_value = params.min;
+      if (key === "maxValue") params.max_value = params.max;
+      if (key === "maxLength") params.max_length = params.max;
 
-      messages.push(t(`shared.validations.${key}`, params))
+      messages.push(t(`shared.validations.${key}`, params));
     }
   }
 
   // Fallback to required
   if (messages.length === 0) {
-    messages.push(t('shared.validations.required', { field: t(fieldName) }))
+    messages.push(t("shared.validations.required", { field: t(fieldName) }));
   }
 
-  return messages
-}
+  return messages;
+};
 ```
 
 ## Best Practices
 
-| Practice | Why |
-|----------|-----|
-| Use `$lazy: true` | Prevents validation until first blur/submit |
-| Use `errorMessageWithParams` | Centralized i18n message handling |
-| Always add `$lazy: true` | Performance optimization |
-| Use computed for error messages | Reactive updates |
-| Add blur/submit handlers | Proper UX for validation |
+| Practice                        | Why                                         |
+| ------------------------------- | ------------------------------------------- |
+| Use `$lazy: true`               | Prevents validation until first blur/submit |
+| Use `errorMessageWithParams`    | Centralized i18n message handling           |
+| Always add `$lazy: true`        | Performance optimization                    |
+| Use computed for error messages | Reactive updates                            |
+| Add blur/submit handlers        | Proper UX for validation                    |
 
 ## Quick Reference
 
 ### Validation Keys (validations.json)
 
-| Key | Description |
-|-----|-------------|
-| `required` | Field is mandatory |
-| `email` | Valid email format |
-| `minLength` | Minimum character count |
-| `maxLength` | Maximum character count |
-| `minValue` | Minimum numeric value |
-| `maxValue` | Maximum numeric value |
-| `sameAs` | Fields must match |
-| `numeric` | Numbers only |
-| `integer` | Whole numbers only |
-| `url` | Valid URL format |
-| `iban` | Valid IBAN |
+| Key                  | Description                 |
+| -------------------- | --------------------------- |
+| `required`           | Field is mandatory          |
+| `email`              | Valid email format          |
+| `minLength`          | Minimum character count     |
+| `maxLength`          | Maximum character count     |
+| `minValue`           | Minimum numeric value       |
+| `maxValue`           | Maximum numeric value       |
+| `sameAs`             | Fields must match           |
+| `numeric`            | Numbers only                |
+| `integer`            | Whole numbers only          |
+| `url`                | Valid URL format            |
+| `iban`               | Valid IBAN                  |
 | `selectbox_required` | Dropdown selection required |
 
 ### Parameter Mapping
 
-| Validator | i18n Param |
-|-----------|------------|
-| `minLength(8)` | `{min_length: 8}` |
+| Validator       | i18n Param         |
+| --------------- | ------------------ |
+| `minLength(8)`  | `{min_length: 8}`  |
 | `maxLength(50)` | `{max_length: 50}` |
-| `minValue(0)` | `{min_value: 0}` |
+| `minValue(0)`   | `{min_value: 0}`   |
 | `maxValue(100)` | `{max_value: 100}` |
 
 ## Adding New Validation Rules
@@ -551,4 +547,3 @@ const customValidator = helpers.withMessage(
 )
 </script>
 ```
-
